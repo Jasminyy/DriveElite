@@ -389,7 +389,7 @@ function Home() {
 
       
       <div className="absolute t-70 l-10 w-72 h-72 bg-purple-600 opacity-30 blur-3xl rounded-full"></div>
-      <div className="max-w-6xl -mt-5 mx-auto relative h-full overflow-hidden ">
+      <div className="max-w-4xl -mt-5 mx-auto relative h-full overflow-hidden ">
         <video
           autoPlay
           muted
@@ -400,7 +400,7 @@ function Home() {
         </video>
       </div>
 
-    <footer className="bg-black text-gray-300 mt-10 ">
+    <footer className="bg-black text-gray-300 mt-5 ">
       {/* Conteúdo principal */}
       <div className="max-w-7xl mx-auto px-6 py-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 ">
         
