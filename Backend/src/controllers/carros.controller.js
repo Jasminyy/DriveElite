@@ -3,25 +3,44 @@ import carroModel from '../models/carro.model.js';
 export const carrosController = {
   // GET todos os carros
   async getAllCarros(req, res) {
-    try {
-      const { page, limit, marca, modelo, ano, precoMin, precoMax, disponivel } = req.query;
-      const filtros = {
-        page,
-        limit,
-        marca,
-        modelo,
-        ano: ano ? Number(ano) : undefined,
-        precoMin: precoMin ? Number(precoMin) : undefined,
-        precoMax: precoMax ? Number(precoMax) : undefined,
-        disponivel: disponivel !== undefined ? (disponivel === 'true' || disponivel === '1') : undefined
-      };
+  try {
+    const { 
+      page, 
+      limit, 
+      marca, 
+      modelo, 
+      ano, 
+      precoMin, 
+      precoMax, 
+      busca,
+      categoria,
+      ordem,
+      disponivel 
+    } = req.query;
 
-      const carros = await carroModel.findAll(filtros);
-      res.status(200).json(carros);
-    } catch (error) {
-      res.status(500).json({ erro: 'Erro ao buscar carros', detalhes: error.message });
-    }
-  },
+    const filtros = {
+      page,
+      limit,
+      marca,
+      modelo,
+      ano: ano ? Number(ano) : undefined,
+      precoMin: precoMin ? Number(precoMin) : undefined,
+      precoMax: precoMax ? Number(precoMax) : undefined,
+      busca,
+      categoria,
+      ordem,
+      disponivel: disponivel !== undefined 
+        ? (disponivel === 'true' || disponivel === '1') 
+        : undefined
+    };
+
+    const carros = await carroModel.findAll(filtros);
+    res.status(200).json(carros);
+
+  } catch (error) {
+    res.status(500).json({ erro: 'Erro ao buscar carros', detalhes: error.message });
+  }
+},
 
   // GET carro por ID
   async getCarroById(req, res) {

@@ -40,7 +40,7 @@ CREATE TABLE `carros` (
   PRIMARY KEY (`id`),
   KEY `status_id` (`status_id`),
   CONSTRAINT `carros_ibfk_1` FOREIGN KEY (`status_id`) REFERENCES `status` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -49,7 +49,7 @@ CREATE TABLE `carros` (
 
 LOCK TABLES `carros` WRITE;
 /*!40000 ALTER TABLE `carros` DISABLE KEYS */;
-INSERT INTO `carros` VALUES (4,'Porsche','911 Carrera S',2021,1250000.00,23450,'3.0 Boxer Twin-Turbo','Automático PDK','Esportivo','Roxo','Carro esportivo de luxo com 450cv e alto desempenho.','porsche-roxa.png',1,308),(5,'Porsche','911 Carrera S',2021,1250000.00,23450,'3.0 Boxer Twin-Turbo','Automático PDK','Esportivo','Roxo','Carro esportivo de luxo com 450cv e alto desempenho.','porsche-roxa.png',1,308),(6,'Ferrari','F8 Tributo',2022,3500000.00,5000,'3.9 V8 Biturbo','Automático','Esportivo','Vermelho','Superesportivo italiano com desempenho extremo.','ferrari-f8.png',1,340),(7,'Lamborghini','Huracán EVO',2021,4200000.00,8000,'5.2 V10','Automático','Esportivo','Roxo','Design agressivo com motor V10 aspirado.','lamborghini-huracan.png',1,325),(8,'McLaren','720S',2020,3800000.00,12000,'4.0 V8 Biturbo','Automático','Esportivo','Rosa','Leve, rápido e extremamente tecnológico.','mclaren-720s.png',1,341),(9,'Aston Martin','DB11',2019,2800000.00,15000,'4.0 V8','Automático','Luxo','Cinza','Luxo britânico com performance refinada.','aston-martin-db11.png',1,300),(10,'Bugatti','Chiron',2023,15000000.00,1000,'8.0 W16 Quad-Turbo','Automático','Hipercarro','Azul','Um dos carros mais rápidos do mundo.','bugatti-chiron.png',1,420);
+INSERT INTO `carros` VALUES (4,'Porsche','911 Carrera S',2021,1250000.00,23450,'3.0 Boxer Twin-Turbo','Automático PDK','Esportivo','Roxo','Carro esportivo de luxo com 450cv e alto desempenho.','porsche-roxa.png',1,308),(6,'Ferrari','F8 Tributo',2022,3500000.00,5000,'3.9 V8 Biturbo','Automático','Esportivo','Vermelho','Superesportivo italiano com desempenho extremo.','ferrari-f8.png',1,340),(7,'Lamborghini','Huracán EVO',2021,4200000.00,8000,'5.2 V10','Automático','Esportivo','Roxo','Design agressivo com motor V10 aspirado.','lamborghini-huracan.png',1,325),(8,'McLaren','720S',2020,3800000.00,12000,'4.0 V8 Biturbo','Automático','Esportivo','Rosa','Leve, rápido e extremamente tecnológico.','mclaren-720s.png',1,341),(9,'Aston Martin','DB11',2019,2800000.00,15000,'4.0 V8','Automático','Formula 1','Cinza','Luxo britânico com performance refinada.','aston-martin-db11.png',1,300),(10,'Bugatti','Chiron',2023,15000000.00,1000,'8.0 W16 Quad-Turbo','Automático','Hipercarro','Azul','Um dos carros mais rápidos do mundo.','bugatti-chiron.png',1,420),(12,'Rolls-Royce','Cullinan',2024,7500000.00,0,'6.75 V12 Twin-Turbo','Automático','SUV','Branco','O SUV mais luxuoso do mundo. Conforto absoluto com motor V12.','rolls-royce.png',1,250);
 /*!40000 ALTER TABLE `carros` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -62,4 +62,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-04-07 16:40:17
+-- Dump completed on 2026-04-21 18:24:09

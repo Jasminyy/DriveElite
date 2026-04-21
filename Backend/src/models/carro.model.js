@@ -11,22 +11,35 @@ export const carroModel = {
       modelo,
       ano,
       precoMin,
-      precoMax
+      precoMax,
+      categoria,
+      busca,
+      ordem
     } = options;
 
     let sql = 'SELECT id, marca, modelo, ano, preco, quilometragem, motor, cambio, categoria, cor, descricao, imagem, status_id, velocidade_max FROM carros';
     const where = [];
     const params = [];
 
+    // Melhorei a busca por categoria para ser mais precisa
     if (marca) { where.push('marca = ?'); params.push(marca); }
     if (modelo) { where.push('modelo = ?'); params.push(modelo); }
     if (ano) { where.push('ano = ?'); params.push(ano); }
     if (precoMin !== undefined) { where.push('preco >= ?'); params.push(precoMin); }
     if (precoMax !== undefined) { where.push('preco <= ?'); params.push(precoMax); }
+    if (categoria) { where.push('LOWER(TRIM(categoria)) = LOWER(TRIM(?))'); params.push(categoria); }
+    if (busca) { where.push('(LOWER(marca) LIKE LOWER(?) OR LOWER(modelo) LIKE LOWER(?))'); params.push(`%${busca}%`, `%${busca}%`);}
 
     if (where.length) sql += ' WHERE ' + where.join(' AND ');
 
-    sql += ' ORDER BY id DESC';
+    // Agora o options.ordem vai funcionar!
+    if (ordem === 'maior_preco') {
+      sql += ' ORDER BY preco DESC';
+    } else if (ordem === 'menor_preco') {
+      sql += ' ORDER BY preco ASC';
+    } else {
+      sql += ' ORDER BY id DESC'; // Ordem padrão
+    }
 
     const lim = Number(limit) || 20;
     const pg = Math.max(Number(page) || 1, 1);

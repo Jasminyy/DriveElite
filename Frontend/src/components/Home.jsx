@@ -1,16 +1,21 @@
 import { useEffect, useRef, useState } from "react"
 import { Link } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
+import { useLocation } from "react-router-dom"
 
 const navItems = [
   { label: "Início", href: "#inicio" },
   { label: "Sobre nós", href: "#sobre" },
-  { label: "Veículos", href: "#veiculos" },
+  { label: "Veiculos", to: "/veiculos" },
 ]
 
 function Home() {
   const imgRef = useRef(null)
   const [menuAberto, setMenuAberto] = useState(false)
   const [veiculos, setVeiculos] = useState([])
+  const [busca, setBusca] = useState("")
+  const navigate = useNavigate()
+  const location = useLocation()
 
   // BUSCAR CARROS DO BACKEND
   useEffect(() => {
@@ -108,13 +113,13 @@ function Home() {
 
           <div className="hidden md:flex md:flex-1 md:items-center md:justify-center md:gap-8 font-poppins">
             {navItems.map((item) => (
-              <a
+              <Link
                 key={item.label}
-                href={item.href}
+                to={item.to}
                 className="text-base font-semibold tracking-wide text-purple-400/75 transition hover:text-purple-400"
               >
                 {item.label}
-              </a>
+              </Link>
             ))}
           </div>
 
@@ -134,7 +139,14 @@ function Home() {
               <input
                 type="search"
                 placeholder="Buscar veículos"
+                value={busca}
+                onChange={(e) => setBusca(e.target.value)}
                 className="w-28 bg-transparent text-sm text-white outline-none placeholder:text-white/40 md:w-40 lg:w-56"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    navigate(`/veiculos?busca=${busca}`)
+                  }
+                }}
               />
             </div>
 
@@ -177,7 +189,14 @@ function Home() {
               <input
                 type="search"
                 placeholder="Buscar veículos"
-                className="w-full bg-transparent text-sm text-white outline-none placeholder:text-white/40"
+                value={busca}
+                onChange={(e) => setBusca(e.target.value)}
+                className="w-28 bg-transparent text-sm text-white outline-none placeholder:text-white/40 md:w-40 lg:w-56"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    navigate(`/veiculos?busca=${busca}`)
+                  }
+                }}
               />
             </div>
 
@@ -212,11 +231,11 @@ function Home() {
           </p>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row lg:justify-start">
-            <a
-              href="#veiculos"
+            <Link
+              to="/veiculos"
               className="rounded-full bg-gradient-to-r from-purple-500 to-purple-600 px-6 py-3 text-sm font-semibold text-white shadow-[0_14px_40px_rgba(168,85,247,0.28)] transition hover:scale-[1.02]"	            >
               Ver veículos
-            </a>
+            </Link>
             <a
               href="#sobre"
               className="rounded-full border border-white/15 bg-white/7 px-6 py-3 text-sm font-semibold text-white/85 transition hover:border-purple-300/50 hover:text-white"
@@ -241,7 +260,7 @@ function Home() {
 
       <div className="text-white flex flex-col justify-center">
 
-        <section id="veiculos" className="mx-auto max-w-7xl px-6 py-24 -mt-60">
+        <section className="mx-auto max-w-7xl px-6 py-24 -mt-60">
 
           {/* PEGAR A PORSCHE */}
           {(() => {
@@ -260,7 +279,7 @@ function Home() {
                   <div className="absolute w-[500px] h-[500px] bg-purple-600/30 blur-[160px] rounded-full" />
 
                   <img
-                    src={`http://localhost:5173/carros/${porsche.imagem}`} // ✅ CORRIGIDO
+                    src={`http://localhost:5173/carros/${porsche.imagem}`} // 
                     alt={porsche.modelo}
                     className="relative w-[420px] sm:w-[520px] md:w-[620px] lg:w-[350px] mt-[20px] xl:w-[400px]"
                   />
@@ -305,7 +324,7 @@ function Home() {
                   {/* PREÇO E BOTÃO */}
                   <div className="mt-10 flex flex-col sm:flex-row gap-4">
 
-                    <div className="rounded-full bg-gradient-to-r from-purple-600 to-purple-700 px-6 py-5 text-xl font-semibold text-white shadow-[0_14px_40px_rgba(168,85,247,0.28)] transition hover:scale-[1.02]">
+                    <div className="rounded-full bg-gradient-to-r from-purple-600 to-purple-700 px-6 py-5 text-xl font-semibold text-white shadow-[0_14px_40px_rgba(168,85,247,0.28)] transition hover:scale-[1.02] text-center">
                       R$ {Number(porsche.preco).toLocaleString('pt-BR')}
                     </div>
 
@@ -324,12 +343,12 @@ function Home() {
         </section>
       </div>
 
-      <div className="overflow-x-auto mt-8 md:overflow-hidden cursor-pointer">
+      <div className="overflow-x-auto mt-5 md:overflow-hidden cursor-pointer">
         <h2 className="text-2xl pl-6 lg:text-4xl font-garamond text-white mb-8">
           Confira nossos outros veículos:
         </h2>
 
-        <div className="overflow-hidden mt-10 cursor-pointer">
+        <div className="overflow-hidden mt-5 cursor-pointer">
           <div
             className="flex gap-6 md:transition-transform md:duration-700 md:ease-in-out"
             style={{
@@ -377,7 +396,7 @@ function Home() {
             Sobre nós
           </p>
 
-          <h2 className="mt-6 font-garamond text-3xl text-white sm:text-5xl lg:max-w-1xl ">
+          <h2 className="mt-6 font-garamond text-3xl text-transparent bg-gradient-to-b from-purple-400 to-purple-500 bg-clip-text sm:text-5xl lg:max-w-1xl ">
             Somos uma marca que vai além do carro, oferecendo experiências.
           </h2>
 
@@ -387,74 +406,74 @@ function Home() {
         </section>
       </div>
 
-      
-      <div className="absolute t-70 l-10 w-72 h-72 bg-purple-600 opacity-30 blur-3xl rounded-full"></div>
-      <div className="max-w-4xl -mt-5 mx-auto relative h-full overflow-hidden ">
+
+      <div className="absolute t-70 l-10 w-72 h-70 bg-purple-600 opacity-30 blur-3xl rounded-full"></div>
+      <div className="max-w-4xl -mt-10 mx-auto relative h-full overflow-hidden ">
         <video
           autoPlay
           muted
           loop
-          className="shadow-[0_10px_60px_rgba(15,23,42,0.35)] md:p-8 gap-6 "
+          className="shadow-[0_10px_60px_rgba(15,23,42,0.35)] md:p-6 gap-6 "
         >
           <source src="carros/Anuncio.mp4" type="video/mp4" />
         </video>
       </div>
 
-    <footer className="bg-black text-gray-300 mt-5 ">
-      {/* Conteúdo principal */}
-      <div className="max-w-7xl mx-auto px-6 py-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 ">
-        
-        <div>
-          <h4 className="text-white font-semibold mb-2">Quem Somos</h4>
-          <p className="text-sm">
-            Conheça nossa história, valores e propósito.
-          </p>
+      <footer className="bg-black text-gray-300 mt-2 ">
+        {/* Conteúdo principal */}
+        <div className="max-w-7xl mx-auto px-6 py-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 ">
+
+          <div>
+            <h4 className="text-white font-semibold mb-2">Quem Somos</h4>
+            <p className="text-sm">
+              Conheça nossa história, valores e propósito.
+            </p>
+          </div>
+
+          <div>
+            <h4 className="text-white font-semibold mb-2">Carros</h4>
+            <p className="text-sm">
+              Conheça nossos carros de luxo e descubra um novo mundo.
+            </p>
+          </div>
+
+          <div>
+            <h4 className="text-white font-semibold mb-2">Trabalhe Conosco</h4>
+            <p className="text-sm">
+              Faça parte do nosso time e cresça junto com a gente.
+            </p>
+          </div>
+
+          <div>
+            <h4 className="text-white font-semibold mb-2">Sustentabilidade</h4>
+            <p className="text-sm">
+              Compromisso com o meio ambiente e impacto social positivo.
+            </p>
+          </div>
+
+          <div>
+            <h4 className="text-white font-semibold mb-2">Descubra</h4>
+            <p className="text-sm">
+              Novidades, lançamentos e promoções exclusivas dos nossos veículos.
+            </p>
+          </div>
+
+          <div>
+            <h4 className="text-white font-semibold mb-2">Contato</h4>
+            <p className="text-sm">
+              <a href="#" className="hover:text-white">TikTok</a> |{" "}
+              <a href="#" className="hover:text-white">Instagram</a> |{" "}
+              <a href="#" className="hover:text-white">WhatsApp</a>
+            </p>
+          </div>
         </div>
 
-        <div>
-          <h4 className="text-white font-semibold mb-2">Carros</h4>
-          <p className="text-sm">
-            Conheça nossos carros de luxo e descubra um novo mundo.
-          </p>
+        {/* Rodapé inferior */}
+        <div className="bg-black text-center py-1 text-sm">
+          <p>&copy; 2025 - Drive Elite. Todos os direitos reservados</p>
         </div>
+      </footer>
 
-        <div>
-          <h4 className="text-white font-semibold mb-2">Trabalhe Conosco</h4>
-          <p className="text-sm">
-            Faça parte do nosso time e cresça junto com a gente.
-          </p>
-        </div>
-
-        <div>
-          <h4 className="text-white font-semibold mb-2">Sustentabilidade</h4>
-          <p className="text-sm">
-            Compromisso com o meio ambiente e impacto social positivo.
-          </p>
-        </div>
-
-        <div>
-          <h4 className="text-white font-semibold mb-2">Descubra</h4>
-          <p className="text-sm">
-            Novidades, lançamentos e promoções exclusivas dos nossos veículos.
-          </p>
-        </div>
-
-        <div>
-          <h4 className="text-white font-semibold mb-2">Contato</h4>
-          <p className="text-sm">
-            <a href="#" className="hover:text-white">TikTok</a> |{" "}
-            <a href="#" className="hover:text-white">Instagram</a> |{" "}
-            <a href="#" className="hover:text-white">WhatsApp</a>
-          </p>
-        </div>
-      </div>
-
-      {/* Rodapé inferior */}
-      <div className="bg-black text-center py-1 text-sm">
-        <p>&copy; 2025 - Drive Elite. Todos os direitos reservados</p>
-      </div>
-    </footer>
- 
     </section>
   )
 }
