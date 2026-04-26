@@ -27,6 +27,7 @@ const app = express();
 app.use(express.json());
 app.use(cors({ origin: 'http://localhost:5173' }));
 app.use("/images", express.static(path.join(__dirname, "public/carros")));
+app.use("/carros", express.static("public/carros"))
 
 app.locals.db = db;
 

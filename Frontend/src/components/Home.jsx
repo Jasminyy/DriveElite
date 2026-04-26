@@ -252,7 +252,7 @@ function Home() {
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
             className="relative w-full max-w-[760px] will-change-transform [transform-style:preserve-3d] transition-transform duration-200 ease-out"
-            src="/carros/CarroPoster.png"
+            src="http://localhost:3000/carros/CarroPoster.png"
             alt="Poster do carro"
           />
         </div>
@@ -279,7 +279,7 @@ function Home() {
                   <div className="absolute w-[500px] h-[500px] bg-purple-600/30 blur-[160px] rounded-full" />
 
                   <img
-                    src={`http://localhost:5173/carros/${porsche.imagem}`} // 
+                    src={`http://localhost:3000/carros/${porsche.imagem}`} // 
                     alt={porsche.modelo}
                     className="relative w-[420px] sm:w-[520px] md:w-[620px] lg:w-[350px] mt-[20px] xl:w-[400px]"
                   />
@@ -367,7 +367,7 @@ function Home() {
                     }`}
                 >
                   <img
-                    src={`/carros/${carro.imagem}`}
+                    src={`http://localhost:3000/carros/${carro.imagem}`}
                     alt={carro.modelo}
                     className="w-full h-[140px] object-cover rounded-lg mb-3"
                   />
@@ -415,7 +415,7 @@ function Home() {
           loop
           className="shadow-[0_10px_60px_rgba(15,23,42,0.35)] md:p-6 gap-6 "
         >
-          <source src="carros/Anuncio.mp4" type="video/mp4" />
+          <source src="http://localhost:3000/carros/Anuncio.mp4" type="video/mp4" />
         </video>
       </div>
 

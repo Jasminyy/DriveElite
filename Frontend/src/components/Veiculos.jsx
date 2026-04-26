@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { useLocation } from "react-router-dom"
 import { Link } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import axios from "axios"
 
 const navItems = [
@@ -14,6 +15,7 @@ function Veiculos() {
   const [menuAberto, setMenuAberto] = useState(false)
   const location = useLocation()
   const [filtrosMobile, setFiltrosMobile] = useState(false)
+  const navigate = useNavigate()
 
   useEffect(() => {
     const params = new URLSearchParams(location.search)
@@ -49,6 +51,27 @@ function Veiculos() {
       console.error(err)
     }
   }
+
+  useEffect(() => {
+    const params = new URLSearchParams()
+
+    if (busca) params.set("busca", busca)
+    if (filtros.categoria) params.set("categoria", filtros.categoria)
+    if (filtros.ordem) params.set("ordem", filtros.ordem)
+
+    navigate(`/veiculos?${params.toString()}`)
+  }, [busca, filtros])
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search)
+
+    setBusca(params.get("busca") || "")
+
+    setFiltros({
+      categoria: params.get("categoria") || "",
+      ordem: params.get("ordem") || ""
+    })
+  }, [location.search])
 
   return (
     <div className="relative min-h-screen bg-black text-white overflow-hidden">
@@ -319,56 +342,63 @@ function Veiculos() {
           </div>
         )}
 
-      {/* LISTA DE CARROS */}
-      <div className="flex-1 p-6">
+        {/* LISTA DE CARROS */}
+        <div className="flex-1 p-6">
 
-        {/* TOP BAR */}
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-3">
+          {/* TOP BAR */}
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-3">
 
-          {/* RESULTADOS (mobile já tem lá em cima, aqui é mais desktop) */}
-          <span className="hidden sm:block text-sm text-gray-400">
-            {carros.length} resultados
-          </span>
+            {/* RESULTADOS (mobile já tem lá em cima, aqui é mais desktop) */}
+            <span className="hidden sm:block text-sm text-gray-400">
+              {carros.length} resultados
+            </span>
 
-          {/* AÇÕES */}
-          <div className="flex gap-6 text-sm text-gray-300 justify-end">
-            <button className="hover:text-white font-semibold">
-              Localizar Compra
-            </button>
+            {/* AÇÕES */}
+            <div className="flex gap-6 text-sm text-gray-300 justify-end">
+              <button className="hover:text-white font-semibold">
+                Localizar Compra
+              </button>
 
-            <button className="hover:text-white font-semibold">
-              Favoritos
-            </button>
+              <button className="hover:text-white font-semibold">
+                Favoritos
+              </button>
+            </div>
+
+          </div>
+
+          {/* GRID */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {carros.map(carro => (
+              <div
+                key={carro.id}
+                className="bg-white/10 p-4 rounded-xl hover:scale-105 transition"
+              >
+                <img
+                  src={`http://localhost:3000/carros/${carro.imagem}`}
+                  className="w-full h-48 object-cover rounded"
+                />
+
+                <h3 className="mt-2 font-bold">
+                  {carro.marca} {carro.modelo}
+                </h3>
+
+                <p className="text-purple-400">
+                  R$ {Number(carro.preco).toLocaleString("pt-BR")}
+                </p>
+
+                <button
+                  onClick={() => navigate(`/compra/${carro.id}`)}
+                  className="mt-3 w-full bg-purple-600 hover:bg-purple-700 transition py-2 rounded-lg cursor-pointer"
+                >
+                  Saiba mais
+                </button>
+              </div>
+            ))}
           </div>
 
         </div>
-
-        {/* GRID */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {carros.map(carro => (
-            <div
-              key={carro.id}
-              className="bg-white/10 p-4 rounded-xl hover:scale-105 transition"
-            >
-              <img
-                src={`/carros/${carro.imagem}`}
-                className="w-full h-48 object-cover rounded"
-              />
-
-              <h3 className="mt-2 font-bold">
-                {carro.marca} {carro.modelo}
-              </h3>
-
-              <p className="text-purple-400">
-                R$ {Number(carro.preco).toLocaleString("pt-BR")}
-              </p>
-            </div>
-          ))}
-        </div>
-
       </div>
-    </div>
     </div >
-      )
+  )
 }
 export default Veiculos
