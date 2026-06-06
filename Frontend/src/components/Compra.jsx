@@ -1,7 +1,13 @@
-import { useParams } from "react-router-dom"
+import { useParams, useNavigate } from "react-router-dom"
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
+import { Heart } from "lucide-react"
+import { addFavorito } from "../services/favoritos"
 import axios from "axios"
+
+import UserAvatar from "./UserAvatar"
+import { isAuthenticated } from "../services/api.js"
+
 import {
     Gauge,
     Settings,
@@ -31,7 +37,7 @@ function Estrelas({ nota }) {
 
 function Compra() {
     const { id } = useParams()
-    const token = localStorage.getItem("token")
+    const navigate = useNavigate()
     const [carro, setCarro] = useState(null)
     const [favorito, setFavorito] = useState(false)
     const [menuAberto, setMenuAberto] = useState(false)
@@ -88,20 +94,29 @@ function Compra() {
        5️⃣ FUNÇÕES
     =============================== */
 
-    function handleFavorito() {
+    async function handleFavorito() {
 
-        const novoEstado = !favorito
-
-        setFavorito(novoEstado)
-
-        if (novoEstado) {
-            setMostrarAlerta(true)
-
-            setTimeout(() => {
-                setMostrarAlerta(false)
-            }, 4000)
-        }
+    if (!isAuthenticated()) {
+        navigate("/login")
+        return
     }
+
+    try {
+
+        await addFavorito(carro.id)
+
+        setFavorito(true)
+
+        setMostrarAlerta(true)
+
+        setTimeout(() => {
+            setMostrarAlerta(false)
+        }, 4000)
+
+    } catch (error) {
+        console.error(error)
+    }
+}
 
     function adicionarComentario() {
         if (!novaAvaliacao.nome.trim()) return
@@ -218,12 +233,14 @@ function Compra() {
                             />
                         </div>
 
-                        <Link
-                             to={token ? "/perfil" : "/login"}
+                        <button
+                            type="button"
                             className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/8 transition hover:border-purple-400/50 hover:bg-white/12"
+                            aria-label="Abrir perfil"
+                            onClick={() => navigate("/perfil")}
                         >
-                            <img className="h-5 w-5 object-contain" src="/ProfileUser.svg" alt="Perfil" />
-                        </Link>
+                            <UserAvatar />
+                        </button>
 
                         <button
                             type="button"
@@ -363,10 +380,20 @@ function Compra() {
                             </span>
                         </div>
 
-                        <button className=" rounded-full  bg-gradient-to-r from-purple-500 to-purple-600 px-6 py-3 w-65 text-sm font-semibold text-white shadow-[0_14px_40px_rgba(168,85,247,0.28)] transition hover:scale-[1.02] ">
+                         <button
+                            type="button"
+                            onClick={() => {
+                                if (!isAuthenticated()) {
+                                    navigate("/login", { state: { from: `/pagamento/${id}` } })
+                                    return
+                                }
+
+                                navigate(`/pagamento/${id}`)
+                            }}
+                            className="bg-white text-black px-8 py-3 rounded-full w-fit mt-2 hover:scale-105 transition font-bold shadow-lg"
+                        >
                             Comprar agora
                         </button>
-
 
                     </div>
                 </div>

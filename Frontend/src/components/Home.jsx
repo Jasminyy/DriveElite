@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { Link } from "react-router-dom"
 import { useNavigate } from "react-router-dom"
+import { isAuthenticated } from "../services/api"
 
 const navItems = [
   { label: "Início", href: "#inicio" },
@@ -10,7 +11,7 @@ const navItems = [
 
 function Home() {
   const imgRef = useRef(null)
-  const token = localStorage.getItem("token")
+  const autenticado = isAuthenticated()
   const [menuAberto, setMenuAberto] = useState(false)
   const [veiculos, setVeiculos] = useState([])
   const [busca, setBusca] = useState("")
@@ -149,7 +150,7 @@ function Home() {
             </div>
 
             <Link
-               to={token ? "/perfil" : "/login"}
+              to={autenticado ? "/perfil" : "/login"}
               className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/8 transition hover:border-purple-400/50 hover:bg-white/12"
             >
               <img

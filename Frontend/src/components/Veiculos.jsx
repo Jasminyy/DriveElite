@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom"
 import { Link } from "react-router-dom"
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
+import { isAuthenticated } from "../services/api"
 
 const navItems = [
   { label: "Início", to: "/" },
@@ -11,7 +12,7 @@ const navItems = [
 ]
 
 function Veiculos() {
-  const token = localStorage.getItem("token")
+  const autenticado = isAuthenticated()
   const [carros, setCarros] = useState([])
   const [menuAberto, setMenuAberto] = useState(false)
   const location = useLocation()
@@ -23,9 +24,14 @@ function Veiculos() {
     ordem: paramsIniciais.get("ordem") || "",
     categoria: paramsIniciais.get("categoria") || ""
   })
-  const [busca, setBusca] = useState(paramsIniciais.get("busca") || "")
 
-  const buscarCarros = useCallback(async () => {
+  const [busca, setBusca] = useState("")
+
+  useEffect(() => {
+    buscarCarros()
+  }, [filtros, busca])
+
+  async function buscarCarros() {
     try {
       const res = await axios.get("http://localhost:3000/carros", {
         params: {
@@ -38,11 +44,7 @@ function Veiculos() {
     } catch (err) {
       console.error(err)
     }
-  }, [busca, filtros])
-
-  useEffect(() => {
-    buscarCarros()
-  }, [buscarCarros])
+  }
 
   useEffect(() => {
     const params = new URLSearchParams()
@@ -52,7 +54,18 @@ function Veiculos() {
     if (filtros.ordem) params.set("ordem", filtros.ordem)
 
     navigate(`/veiculos?${params.toString()}`)
-   }, [busca, filtros, navigate])
+  }, [busca, filtros])
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search)
+
+    setBusca(params.get("busca") || "")
+
+    setFiltros({
+      categoria: params.get("categoria") || "",
+      ordem: params.get("ordem") || ""
+    })
+  }, [location.search])
 
   return (
     <div className="relative min-h-screen bg-black text-white overflow-hidden">
@@ -105,7 +118,7 @@ function Veiculos() {
             </div>
 
             <Link
-              to={token ? "/perfil" : "/login"}
+              to={autenticado ? "/perfil" : "/login"}
               className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/8 transition hover:border-purple-400/50 hover:bg-white/12"
             >
               <img

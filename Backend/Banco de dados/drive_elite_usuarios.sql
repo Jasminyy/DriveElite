@@ -26,9 +26,9 @@ CREATE TABLE `usuarios` (
   `id` int NOT NULL AUTO_INCREMENT,
   `nome` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `email` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `senha` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `cpf` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `telefone` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `senha` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `role` enum('user','admin') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'user',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `pais` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -40,8 +40,9 @@ CREATE TABLE `usuarios` (
   `complemento` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `cep` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  UNIQUE KEY `email` (`email`),
+  UNIQUE KEY `cpf` (`cpf`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -50,10 +51,12 @@ CREATE TABLE `usuarios` (
 
 LOCK TABLES `usuarios` WRITE;
 /*!40000 ALTER TABLE `usuarios` DISABLE KEYS */;
-INSERT INTO `usuarios` (`id`, `nome`, `email`, `senha`, `cpf`, `telefone`, `role`, `created_at`, `pais`, `estado`, `cidade`, `bairro`, `rua`, `numero`, `complemento`, `cep`) VALUES (2,'Jasminy','jasminy@email.com','$2a$10$xCvWp1Z0tXJyMXah5CztaOLvhrX.YubYefrs0oaO4rVAETf3FWfg.','000.000.000-01',NULL,'user','2026-02-10 00:25:45',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(4,'Jasminy','teste@email.com','$2a$10$P0GJ8W.dvnMpptUnfKmNl.pVdd4azO.cEnhBdiVw1TQSKjUZ9qDG.','000.000.000-02',NULL,'user','2026-02-13 19:38:08',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(5,'Jasminy-Admin','jasminy_santos@estudante.sesisenai.org.br','$2a$10$P3nFOREiIsGpi8chAEzhDuhNdaUb0tb91.QxkV7OUkNSJ1xCwIDLm','000.000.000-03',NULL,'admin','2026-02-16 16:44:28',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `usuarios` VALUES (2,'Jasminy','jasminy@email.com','$2a$10$xCvWp1Z0tXJyMXah5CztaOLvhrX.YubYefrs0oaO4rVAETf3FWfg.','pendente-2',NULL,'user','2026-02-10 00:25:45',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(4,'Jasminy','teste@email.com','$2a$10$P0GJ8W.dvnMpptUnfKmNl.pVdd4azO.cEnhBdiVw1TQSKjUZ9qDG.','pendente-4',NULL,'user','2026-02-13 19:38:08',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(5,'Jasminy-Admin','jasminy_santos@estudante.sesisenai.org.br','$2a$10$P3nFOREiIsGpi8chAEzhDuhNdaUb0tb91.QxkV7OUkNSJ1xCwIDLm','pendente-5',NULL,'admin','2026-02-16 16:44:28',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(6,'Teste','Teste@cadastro.gmail','$2a$10$BWQRkdVtHEOtn1e6b8KHQed3KSnhYcxLA0dWtYi6.j1onnrnvZ4S6','12345678910',NULL,'user','2026-05-16 21:21:44',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `usuarios` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
@@ -61,4 +64,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-04-21 18:24:08
+-- Dump completed on 2026-05-25 21:25:48

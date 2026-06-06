@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import axios from "axios"
+import { ArrowLeft } from "lucide-react"
 
 function Cadastro() {
 
@@ -46,6 +47,24 @@ function Cadastro() {
             <div className="absolute left-1/2 top-1/2 h-[450px] w-[450px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-500/10 blur-[150px]" />
             <div className="absolute left-65 top-50 h-[300px] w-[300px] rounded-full bg-fuchsia-600/25 blur-[120px]" />
 
+             <button
+                            onClick={() => navigate(-1)}
+                            className="
+                                absolute top-6 left-6 z-50
+                                flex items-center justify-center
+                                w-11 h-11
+                                rounded-full
+                                cursor-pointer
+                                border border-white/10
+                                bg-white/5
+                                backdrop-blur-xl
+                                hover:border-purple-400/40
+                                hover:bg-white/10
+                                transition
+                                "
+                        >
+                            <ArrowLeft className="w-5 h-5 text-white" />
+                        </button>
 
             <section className="relative z-10 flex min-h-screen flex-col lg:flex-row">
 
@@ -86,11 +105,11 @@ function Cadastro() {
                                 alt=""
                             />
                         </div>
-                        <h1 className="text-4xl text-white font-bold mb-2">
+                        <h1 className="text-4xl text-white text-center font-bold mb-2">
                             Criar conta
                         </h1>
 
-                        <p className="text-white/50 mb-8">
+                        <p className="text-white/50 text-center mb-8">
                             Entre para o universo DriveElite
                         </p>
 

@@ -27,9 +27,11 @@ CREATE TABLE `favoritos` (
   `id_usuario` int NOT NULL,
   `id_carro` int NOT NULL,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_favorito` (`id_usuario`,`id_carro`),
   KEY `id_usuario` (`id_usuario`),
   KEY `id_carro` (`id_carro`),
-  CONSTRAINT `favoritos_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id`)
+  CONSTRAINT `favoritos_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id`),
+  CONSTRAINT `favoritos_ibfk_2` FOREIGN KEY (`id_carro`) REFERENCES `carros` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -51,4 +53,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-04-21 18:24:09
+-- Dump completed on 2026-05-25 21:25:46
