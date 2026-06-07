@@ -5,6 +5,9 @@ import { jwtDecode } from "jwt-decode"
 import { updateEndereco } from "../services/usuario"
 import UserAvatar from "../components/UserAvatar"
 
+import { getStoredUser, saveSession, getToken } from "../services/api.js"
+import { getFavoritos, removeFavorito } from "../services/favoritos"
+
 import {
   Heart,
   History,
@@ -14,11 +17,6 @@ import {
   User,
   LogOut
 } from "lucide-react"
-
-import {
-  getFavoritos,
-  removeFavorito
-} from "../services/favoritos"
 
 
 function Perfil() {
@@ -42,6 +40,12 @@ function Perfil() {
 
   const [tab, setTab] = useState("perfil")
   const [favoritos, setFavoritos] = useState([])
+  const [photoPreview, setPhotoPreview] = useState(null)
+
+  const getCarImageUrl = (imagem) =>
+    imagem?.startsWith("http")
+      ? imagem
+      : `http://localhost:3000/carros/${imagem}`
 
   function logout() {
     localStorage.removeItem("token")
@@ -98,6 +102,42 @@ useEffect(() => {
 }, [])
 
 useEffect(() => {
+  const stored = getStoredUser()
+  setPhotoPreview(stored?.imagem || null)
+}, [])
+
+async function handlePhotoChange(e) {
+  const file = e.target.files?.[0]
+  if (!file) return
+
+  const reader = new FileReader()
+  reader.onload = () => {
+    const dataUrl = reader.result
+
+    const stored = getStoredUser() || {}
+    stored.imagem = dataUrl
+
+    // Keep token if exists
+    const token = localStorage.getItem("token")
+    if (token) {
+      localStorage.setItem("driveelite_user", JSON.stringify(stored))
+    } else {
+      localStorage.setItem("driveelite_user", JSON.stringify(stored))
+    }
+
+    setPhotoPreview(dataUrl)
+  }
+  reader.readAsDataURL(file)
+}
+
+function handleRemovePhoto() {
+  const stored = getStoredUser() || {}
+  delete stored.imagem
+  localStorage.setItem("driveelite_user", JSON.stringify(stored))
+  setPhotoPreview(null)
+}
+
+useEffect(() => {
 
   setEndereco({
     rua: user.rua || "",
@@ -136,6 +176,21 @@ async function salvarEndereco() {
         <h1 className="text-5xl font-black mb-10">
           Meu Perfil
         </h1>
+
+        <div className="mb-6 flex flex-wrap gap-3">
+          <button
+            onClick={() => setTab("favoritos")}
+            className="rounded-2xl bg-white/10 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/20"
+          >
+            Favoritos ({favoritos.length})
+          </button>
+          <button
+            onClick={() => setTab("compras")}
+            className="rounded-2xl bg-white/10 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/20"
+          >
+            Compras
+          </button>
+        </div>
 
         <div className="grid grid-cols-[320px_1fr] gap-8">
 
@@ -296,6 +351,32 @@ async function salvarEndereco() {
               </div>
             )}
 
+            {/* Photo upload */}
+            {tab === "perfil" && (
+              <div className="mt-8">
+                <h3 className="text-lg font-semibold mb-2">Foto de perfil</h3>
+
+                <div className="flex items-center gap-4">
+                  <div className="w-20 h-20"> 
+                    {photoPreview ? (
+                      <img src={photoPreview} alt="preview" className="w-20 h-20 object-cover rounded-full" />
+                    ) : (
+                      <UserAvatar name={user.nome} className="w-20 h-20" />
+                    )}
+                  </div>
+
+                  <div className="flex flex-col gap-2">
+                    <label className="px-4 py-2 bg-white/5 rounded-lg cursor-pointer">
+                      Adicionar / Alterar foto
+                      <input type="file" accept="image/*" onChange={handlePhotoChange} className="hidden" />
+                    </label>
+
+                    <button onClick={handleRemovePhoto} className="px-4 py-2 bg-red-500/20 rounded-lg">Remover foto</button>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {tab === "favoritos" && (
 
   <div>
@@ -327,8 +408,8 @@ async function salvarEndereco() {
           >
 
             <img
-              src={carro.imagem}
-              alt={carro.nome}
+              src={getCarImageUrl(carro.imagem)}
+              alt={`${carro.marca} ${carro.modelo}`}
               className="
               w-full h-52
               object-cover
@@ -338,7 +419,7 @@ async function salvarEndereco() {
             <div className="p-5">
 
               <h3 className="text-xl font-bold">
-                {carro.nome}
+                {carro.marca} {carro.modelo}
               </h3>
 
               <p className="text-purple-300 mt-2">

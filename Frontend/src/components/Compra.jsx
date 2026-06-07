@@ -43,6 +43,12 @@ function Compra() {
     const [menuAberto, setMenuAberto] = useState(false)
     const [busca, setBusca] = useState("")
     const [mostrarAlerta, setMostrarAlerta] = useState(false);
+    const [popupFavoritoCarro, setPopupFavoritoCarro] = useState(null);
+
+    const getCarImageUrl = (imagem) =>
+      imagem?.startsWith("http")
+        ? imagem
+        : `http://localhost:3000/carros/${imagem}`
     const avaliacoes = [
         {
             id: 1,
@@ -106,6 +112,7 @@ function Compra() {
         await addFavorito(carro.id)
 
         setFavorito(true)
+        setPopupFavoritoCarro(carro)
 
         setMostrarAlerta(true)
 
@@ -115,6 +122,11 @@ function Compra() {
 
     } catch (error) {
         console.error(error)
+        if (error.response && error.response.status === 401) {
+            // Token inválido ou expirado - redirecionar para login
+            navigate('/login')
+            return
+        }
     }
 }
 
@@ -323,9 +335,18 @@ function Compra() {
                             <span className="hidden lg:inline">adicionar como favorito</span>
                             {mostrarAlerta && (
                                 <div className="fixed bottom-10 right-10 z-[100] animate-bounce">
-                                    <div className="bg-white text-black px-6 py-3 rounded-2xl shadow-2xl border border-purple-700 flex items-center gap-3">
-                                        <span className="text-xl">💜</span>
-                                        <span className="font-bold">Salvo em favoritos!</span>
+                                    <div className="bg-white text-black p-4 rounded-3xl shadow-2xl border border-purple-700 flex items-center gap-3 max-w-xs">
+                                        <img
+                                          src={getCarImageUrl(popupFavoritoCarro?.imagem)}
+                                          alt={popupFavoritoCarro ? `${popupFavoritoCarro.marca} ${popupFavoritoCarro.modelo}` : "Favorito"}
+                                          className="h-14 w-14 rounded-3xl object-cover"
+                                        />
+                                        <div>
+                                          <p className="font-bold">Salvo em favoritos!</p>
+                                          <p className="text-sm text-black/70">
+                                            {popupFavoritoCarro ? `${popupFavoritoCarro.marca} ${popupFavoritoCarro.modelo}` : "Carro adicionado."}
+                                          </p>
+                                        </div>
                                     </div>
                                 </div>
                             )}

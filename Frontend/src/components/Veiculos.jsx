@@ -4,6 +4,7 @@ import { Link } from "react-router-dom"
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
 import { isAuthenticated } from "../services/api"
+import { api } from "../services/api"
 
 const navItems = [
   { label: "Início", to: "/" },
@@ -25,6 +26,11 @@ function Veiculos() {
     categoria: paramsIniciais.get("categoria") || ""
   })
 
+  const [mostrarPopupCompra, setMostrarPopupCompra] = useState(false)
+  const [popupCompraTexto, setPopupCompraTexto] = useState("")
+  const [mostrarPopupFavoritos, setMostrarPopupFavoritos] = useState(false)
+  const [popupFavoritos, setPopupFavoritos] = useState([])
+
   const [busca, setBusca] = useState("")
 
   useEffect(() => {
@@ -43,6 +49,59 @@ function Veiculos() {
       setCarros(res.data)
     } catch (err) {
       console.error(err)
+    }
+  }
+
+  async function handleLocalizarCompra() {
+    if (!isAuthenticated()) {
+      navigate('/login')
+      return
+    }
+
+    try {
+      const res = await api.get('/usuarios/me/compras')
+      const compras = res.data
+
+      if (compras && compras.length > 0) {
+        const ultima = compras[0]
+        setPopupCompraTexto(`Última compra: ${ultima.marca} ${ultima.modelo} — R$ ${Number(ultima.preco_venda || ultima.preco_atual || 0).toLocaleString('pt-BR')}`)
+      } else {
+        setPopupCompraTexto('Nenhuma compra encontrada.')
+      }
+
+      setMostrarPopupCompra(true)
+
+      setTimeout(() => setMostrarPopupCompra(false), 4000)
+    } catch (err) {
+      console.error(err)
+      if (err.response && err.response.status === 401) {
+        navigate('/login')
+        return
+      }
+      setPopupCompraTexto('Erro ao localizar compras')
+      setMostrarPopupCompra(true)
+      setTimeout(() => setMostrarPopupCompra(false), 3000)
+    }
+  }
+
+  async function handleMostrarFavoritosPopup() {
+    if (!isAuthenticated()) {
+      navigate('/login')
+      return
+    }
+
+    try {
+      const res = await api.get('/favoritos')
+      setPopupFavoritos(res.data || [])
+      setMostrarPopupFavoritos(true)
+    } catch (err) {
+      console.error(err)
+      if (err.response && err.response.status === 401) {
+        navigate('/login')
+        return
+      }
+      setPopupFavoritos([])
+      setMostrarPopupFavoritos(true)
     }
   }
 
@@ -351,17 +410,62 @@ function Veiculos() {
             </span>
 
             {/* AÇÕES */}
-            <div className="flex gap-6 text-sm text-gray-300 justify-end">
-              <button className="hover:text-white font-semibold">
+            <div className="relative flex gap-6 text-sm text-gray-300 justify-end">
+              <button onClick={handleLocalizarCompra} className="hover:text-white font-semibold">
                 Localizar Compra
               </button>
 
-              <button className="hover:text-white font-semibold">
+              <button onClick={handleMostrarFavoritosPopup} className="hover:text-white font-semibold">
                 Favoritos
               </button>
+
+              {mostrarPopupFavoritos && (
+                <div className="absolute top-full right-0 mt-2 z-[100] w-[320px] rounded-3xl bg-black/75 border border-white/10 p-4 shadow-2xl backdrop-blur-xl text-white">
+                  <div className="flex items-center justify-between mb-3 gap-4">
+                    <div>
+                      <p className="text-xs uppercase text-purple-300">Favoritos</p>
+                      <h3 className="font-bold text-sm">Carros salvos</h3>
+                    </div>
+                    <button
+                      onClick={() => setMostrarPopupFavoritos(false)}
+                      className="text-white/60 hover:text-white"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                  {popupFavoritos.length === 0 ? (
+                    <p className="text-sm text-white/60">Nenhum favorito encontrado.</p>
+                  ) : (
+                    <div className="space-y-3">
+                      {popupFavoritos.slice(0, 3).map((fav) => (
+                        <div key={fav.favorito_id} className="flex items-center gap-3 rounded-3xl bg-white/10 p-3">
+                          <img
+                            src={fav.imagem?.startsWith("http") ? fav.imagem : `http://localhost:3000/carros/${fav.imagem}`}
+                            alt={`${fav.marca} ${fav.modelo}`}
+                            className="h-14 w-14 rounded-2xl object-cover"
+                          />
+                          <div>
+                            <p className="font-semibold text-sm">{fav.marca} {fav.modelo}</p>
+                            <p className="text-xs text-white/60">R$ {Number(fav.preco).toLocaleString("pt-BR")}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
           </div>
+
+          {mostrarPopupCompra && (
+            <div className="fixed bottom-6 right-6 z-[100]">
+              <div className="bg-white text-black px-4 py-3 rounded-2xl shadow-2xl border border-purple-700 flex items-center gap-3">
+                <span className="text-xl">🛒</span>
+                <div className="text-sm">{popupCompraTexto}</div>
+              </div>
+            </div>
+          )}
 
           {/* GRID */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
